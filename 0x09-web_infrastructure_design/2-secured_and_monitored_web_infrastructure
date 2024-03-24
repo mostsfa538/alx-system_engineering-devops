@@ -1,0 +1,36 @@
+The Design
+https://i.imgur.com/i61VoQs.png
+
+1- Additional Elements and Their Purpose:
+Firewalls (FW1, FW2, FW3): Firewalls are added to enhance security by filtering and controlling incoming and outgoing network traffic. They prevent unauthorized access and malicious attacks.
+
+HTTPS: Traffic is served over HTTPS to ensure secure communication between users and the website. HTTPS encrypts the data transmitted, preventing eavesdropping and data manipulation.
+
+Monitoring Clients: Monitoring clients collect performance and health data from each server, which is then sent to a monitoring service. 
+This helps monitor the infrastructure's health and detect potential issues.
+
+2- Purpose of Firewalls: Firewalls act as a barrier between the servers and the external network, controlling incoming and outgoing traffic based on predefined rules. 
+They prevent unauthorized access, protect against malicious activity, and help enforce network security policies.
+
+3- HTTPS for Secure Traffic: Traffic is served over HTTPS to encrypt data during transmission. 
+This prevents sensitive information (like passwords, credit card details) from being intercepted by malicious actors, enhancing user privacy and security.
+
+4- Monitoring for Infrastructure Insights: Monitoring is used to track the health, performance, and availability of the infrastructure components. 
+It helps identify bottlenecks, anomalies, and potential issues in real-time, enabling proactive maintenance and troubleshooting.
+
+5- Data Collection by Monitoring Tool: Monitoring tools collect data through monitoring agents or clients installed on each server. 
+These agents gather metrics related to CPU usage, memory, disk I/O, network activity, and more. The data is then sent to a central monitoring service for analysis and visualization.
+
+6- Monitoring Web Server QPS: To monitor the web server's QPS (Queries Per Second), you can set up monitoring to track the incoming request rate to the web server. Monitoring tools can provide real-time graphs and alerts based on thresholds you define.
+
+Issues with the Infrastructure:
+
+Termination of SSL at Load Balancer: Terminating SSL at the load balancer can be an issue because communication between the load balancer and the backend servers might happen in plaintext. While this is fine within a trusted network, it can pose a security risk if the network is compromised.
+
+Single MySQL Server for Writes: Having only one MySQL server capable of accepting writes creates a single point of failure. 
+If the MySQL server goes down, write operations are affected, potentially leading to data inconsistencies and downtime.
+
+Identical Servers with All Components: Having servers with identical components might lead to resource contention. 
+If one component (e.g., database) experiences heavy load, it can affect other components, leading to performance issues. Specialized servers can help distribute the load better.
+
+To mitigate these issues, you might consider implementing SSL termination securely, using database clustering for high availability, and optimizing server roles based on their strengths to achieve better performance and resource allocation.
