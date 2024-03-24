@@ -1,0 +1,26 @@
+The Design
+https://i.imgur.com/o0WY5qc.png
+
+1- For every additional element, why you are adding it:
+Load Balancer (HAproxy): Adding a load balancer distributes incoming traffic across multiple servers. It enhances availability, scalability, and ensures no single server is overwhelmed.
+Additional Servers: These servers increase redundancy, fault tolerance, and the capacity to handle more traffic.
+Replica MySQL Databases: Replicas improve database performance and provide failover capabilities in case the primary database fails.
+
+2- Load Balancer Distribution Algorithm: In this design, the HAproxy load balancer is likely configured with a round-robin distribution algorithm. This algorithm routes requests sequentially to each server in a loop, ensuring an even distribution of traffic among servers.
+
+3- Load-Balancer Setup (Active-Active vs. Active-Passive): The load balancer setup here is Active-Active, which means both Server 1 and Server 2 are actively serving requests simultaneously. In an Active-Passive setup, one server is active while the other remains on standby, only becoming active if the primary server fails.
+
+4- Database Primary-Replica (Master-Slave) Cluster: A Primary-Replica database cluster involves a Master-Slave relationship. The Primary (Master) node handles write operations and replicates data changes to the Replica (Slave) nodes. Replica nodes handle read queries and can step in as the primary node if the primary fails.
+
+5- Difference Between Primary and Replica Nodes in Regard to the Application:
+Primary Node: The primary node is responsible for handling write operations (INSERT, UPDATE, DELETE). It's where data modifications are initiated.
+Replica Node: Replica nodes are read-only copies of the primary data. They handle read operations (SELECT queries) to offload the primary node, enhancing read performance. 
+However, the can't accept write operations directly.
+
+Issues with the Infrastructure:
+Single Points of Failure (SPOF):
+If the Load Balancer fails, incoming traffic won't be balanced, leading to potential overloading of a single server. If a single server (Server 1, 2, or 3) fails, the load on the other servers increases, potentially affecting performance and availability. 2. Security Issues:
+
+Lack of Firewall: Without a firewall, servers are more vulnerable to unauthorized access and attacks. No HTTPS: Without HTTPS, communication between users and servers is not encrypted, posing security and privacy risks. 3. Lack of Monitoring:
+
+Without monitoring tools, it's challenging to track server health, performance, and potential issues in real-time.
