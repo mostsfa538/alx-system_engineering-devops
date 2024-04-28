@@ -2,19 +2,35 @@
 
 exec { '/usr/bin/env apt-get -y update' : }
 
-exec { '/usr/bin/env apt-get -y update' : }
--> package { 'nginx':
+-> exec { 'nginx':
   ensure => installed,
 }
--> file { '/var/www/html/index.html' :
-  content => 'Hello World!',
+
+firewall { 'Allow Nginx HTTP':
+  port   => 80,
+  proto  => 'tcp',
+  action => 'accept',
 }
--> file_line { 'add header' :
-  ensure => present,
-  path   => '/etc/nginx/sites-available/default',
-  line   => "\tadd_header X-Served-By ${hostname};",
-  after  => 'server_name _;',
+nginx::resource::server { 'default':
+  listen_port => '80',
+  locations   => {
+    '/' => {
+      'add_header' => 'X-Served-By $hostname',
+    },
+    '= /error_404.html' => {
+      'root'      => '/usr/share/nginx/html',
+      'add_header'=> 'X-Served-By $hostname',
+      'internal'  => true,
+    },
+  },
 }
--> service { 'nginx':
-  ensure => running,
+
+file { '/var/www/html/index.nginx-debian.html':
+  ensure  => file,
+  content => "Hello World!\n",
+}
+
+file { '/usr/share/nginx/html/error_404.html':
+  ensure  => file,
+  content => "Ceci n'est pas une page\n",
 }
