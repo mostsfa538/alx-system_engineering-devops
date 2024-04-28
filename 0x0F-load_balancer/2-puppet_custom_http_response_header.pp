@@ -1,34 +1,20 @@
 # configure web-02 to be identical to web-01 with puppet
 
-package { 'nginx':
+exec { '/usr/bin/env apt-get -y update' : }
+
+exec { '/usr/bin/env apt-get -y update' : }
+-> package { 'nginx':
   ensure => installed,
 }
-
-firewall { 'Allow Nginx HTTP':
-  port   => 80,
-  proto  => 'tcp',
-  action => 'accept',
+-> file { '/var/www/html/index.html' :
+  content => 'Hello World!',
 }
-nginx::resource::server { 'default':
-  listen_port => '80',
-  locations   => {
-    '/' => {
-      'add_header' => 'X-Served-By $hostname',
-    },
-    '= /custom_404.html' => {
-      'root'      => '/usr/share/nginx/html',
-      'add_header'=> 'X-Served-By $hostname',
-      'internal'  => true,
-    },
-  },
+-> file_line { 'add header' :
+  ensure => present,
+  path   => '/etc/nginx/sites-available/default',
+  line   => "\tadd_header X-Served-By ${hostname};",
+  after  => 'server_name _;',
 }
-
-file { '/var/www/html/index.nginx-debian.html':
-  ensure  => file,
-  content => "Hello World!\n",
+-> service { 'nginx':
+  ensure => running,
 }
-
-file { '/usr/share/nginx/html/custom_404.html':
-  ensure  => file,
-  content => "Ceci n'est pas une page\n",
-
