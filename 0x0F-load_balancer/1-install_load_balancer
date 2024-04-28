@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Install and configure HAproxy.
+
+sudo apt update
+sudo apt-get -y upgrade
+sudo apt-get install -y haproxy
+
+echo "ENABLED=1" >> /etc/default/haproxy
+sudo mv /etc/haproxy/haproxy.cfg{,.bak}
+sudo touch /etc/haproxy/haproxy.cfg
+
+printf %s "global
+    log 127.0.0.1 local0 notice
+    maxconn     4000
+    user        haproxy
+    group       haproxy
+
+defaults
+    log global
+    mode http
+    option httplog
+    option dontlognull
+    retries 3
+    option redispatch
+    timeout connect 5000
+    timeout client 50000
+    timeout server 50000
+
+frontend haproxy_balancer
+    bind *:80
+    mode http
+    default_backend webservers
+
+backend webservers
+    balance roundrobin
+    server 363628-web-01 34.207.58.144:80 check
+    server 363628-web-02 54.175.254.52:80 check
+" >> /etc/haproxy/haproxy.cfg
+
+if [ "$(pgrep -c haproxy)" -le 0 ]; then
+	service haproxy start
+else
+	service haproxy restart
+fi
