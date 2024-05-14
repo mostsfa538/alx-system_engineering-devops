@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# backup sql
+
+if [ "$1" ] ; then
+	current_date=$(date +%d-%m-%Y)
+	dump_file="backup.sql"
+	archive_file="$current_date.tar.gz"
+
+	mysqldump -uroot -p"$1" --all-databases > $dump_file
+
+	tar -czf $archive_file $dump_file
+
+	echo $dump_file
+fi
