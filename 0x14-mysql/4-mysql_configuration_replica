@@ -37,4 +37,7 @@ log_bin                 = /var/log/mysql/mysql-bin.log
 expire_logs_days        = 10
 max_binlog_size         = 100M
 binlog_do_db            = tyrell_corp
+master-host             = web-01
+master-user             = replica_user
+master-password         = your_password_here
 
