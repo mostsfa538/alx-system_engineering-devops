@@ -32,10 +32,8 @@ if __name__ == "__main__":
 
     csv_filename = f'{id}.csv'
     with open(csv_filename, 'w', newline='') as csvfile:
-        fieldnames = ["ID", "Name", "Status", "task"]
-        writer = csv.DictWriter(
-            csvfile, fieldnames=fieldnames, quoting=csv.QUOTE_ALL)
+        writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
 
-        writer.writeheader()
         for row in dataset:
-            writer.writerow(row)
+            writer.writerow(
+                [row["ID"], row["Name"], row["Status"], row["task"]])
