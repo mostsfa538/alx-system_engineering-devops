@@ -13,8 +13,10 @@ if __name__ == "__main__":
     todos = [task for task in todo if task['userId'] == int(id)]
     emp_name = user['username']
 
-    print(
-        f'Employee {emp_name} is done with tasks({len([task for task in todos if task["completed"]])}/{len(todos)}):')
+    completed_tasks = len([task for task in todos if task['completed']])
+    total_tasks = len(todos)
+
+    print(f'Employee {emp_name} is done with tasks({completed_tasks}/{total_tasks}):')
     for task in todos:
         if task['completed']:
             print(f'\t {task["title"]}')
